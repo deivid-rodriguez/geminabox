@@ -45,11 +45,6 @@ module Geminabox
       assert_equal expected, GemListMerge.from(list_one, list_two)
     end
 
-    def test_hash
-      assert_equal [:x, :y], gem_list_merge.hash.keys
-      assert_equal [build_gem(:x)], gem_list_merge.hash[:x]
-    end
-
     def build_gem(name, number = '0.0.1')
       {
           name: name.to_s,

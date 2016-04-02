@@ -11,28 +11,10 @@ module Geminabox
     end
 
     def merge(other)
-      combine_hashes(other).values.flatten.sort do |x, y|
-        x.values[ignore_dependencies] <=> y.values[ignore_dependencies]
-      end
-    end
-
-    def hash
-      list.each do |item|
-        name = item[:name].to_sym
-        collection[name] ||= []
-        collection[name] << item unless collection[name].include?(item)
-      end
-      collection
-    end
-
-    def collection
-      @collection ||= {}
-    end
-
-    def combine_hashes(other)
-      hash.merge(other.hash) do |key, value, other_value|
-        (value + other_value).uniq{|v| v.values[ignore_dependencies]}
-      end
+      merged = (list + other.list)
+      merged.uniq! {|val| val.values[ignore_dependencies] }
+      merged.sort! {|x, y| x.values[ignore_dependencies] <=> y.values[ignore_dependencies] }
+      merged
     end
 
     def ignore_dependencies
