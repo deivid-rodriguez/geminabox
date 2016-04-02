@@ -12,13 +12,13 @@ module Geminabox
 
     def merge(other)
       merged = (list + other.list)
-      merged.uniq! {|val| val.values[ignore_dependencies] }
-      merged.sort! {|x, y| x.values[ignore_dependencies] <=> y.values[ignore_dependencies] }
+      merged.uniq! {|val| val.values[name_version] }
+      merged.sort! {|x, y| x.values[name_version] <=> y.values[name_version] }
       merged
     end
 
-    def ignore_dependencies
-      0..-2
+    def name_version
+      0..1
     end
 
   end
