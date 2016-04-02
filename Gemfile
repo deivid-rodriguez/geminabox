@@ -7,4 +7,5 @@ group :test do
   gem 'minitest'
   gem 'capybara-mechanize'
   gem 'webmock'
+  gem 'pry-nav'
 end

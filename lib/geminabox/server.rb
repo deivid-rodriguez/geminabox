@@ -259,16 +259,30 @@ HTML
       params[:gems].to_s.split(',')
     end
 
+    def elapsed_time(label, query_gems)
+      started = Time.now
+      ret = yield
+      puts "#{label}: #{query_gems.join(',')} #{(Time.now - started).to_f} sec"
+      File.write("/tmp/#{label}_#{query_gems.first}", Marshal.dump(ret)) rescue nil
+      ret
+    end
+
     def local_gem_list
-      query_gems.map{|query_gem| gem_dependencies(query_gem) }.flatten(1)
+      elapsed_time(:local_gem_list, query_gems) do
+        query_gems.map{|query_gem| gem_dependencies(query_gem) }.flatten(1)
+      end
     end
 
     def remote_gem_list
-      RubygemsDependency.for(*query_gems)
+      elapsed_time(:remote_gem_list, query_gems) do
+        RubygemsDependency.for(*query_gems)
+      end
     end
 
     def combined_gem_list
-      GemListMerge.from(local_gem_list, remote_gem_list)
+      elapsed_time(:combined_gem_list, query_gems) do
+        GemListMerge.from(local_gem_list, remote_gem_list)
+      end
     end
 
     helpers do
