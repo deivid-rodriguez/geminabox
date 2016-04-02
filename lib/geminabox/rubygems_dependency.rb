@@ -20,7 +20,7 @@ module Geminabox
       end
 
       def rubygems_uri
-        "https://bundler.rubygems.org/api/v1/dependencies"
+        "#{Geminabox.bundler_ruby_gems_url}/api/v1/dependencies"
       end
 
     end
