@@ -18,7 +18,6 @@ module Geminabox
 
     def hash
       list.each do |item|
-        ensure_symbols_as_keys(item)
         name = item[:name].to_sym
         collection[name] ||= []
         collection[name] << item unless collection[name].include?(item)
@@ -38,13 +37,6 @@ module Geminabox
 
     def ignore_dependencies
       0..-2
-    end
-
-    def ensure_symbols_as_keys(item)
-      item.keys.each do |key|
-        next if key.kind_of? Symbol
-        item[key.to_sym] = item.delete(key)
-      end
     end
 
   end
