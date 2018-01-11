@@ -4,7 +4,7 @@ module Geminabox
 
   class Server < Sinatra::Base
     enable :static, :methodoverride
-    use Rack::Session::Pool, :expire_after => 2592000
+    use Rack::Session::Pool, :expire_after => Geminabox.session_expire_after
     use Rack::Protection
 
     def self.delegate_to_geminabox(*delegate_methods)
@@ -24,7 +24,7 @@ module Geminabox
       :retry_interval,
       :rubygems_proxy,
       :ruby_gems_url,
-      :allow_upload
+      :allow_upload,
     )
 
     if Server.rubygems_proxy
@@ -35,15 +35,15 @@ module Geminabox
 
     class << self
       def disallow_replace?
-        ! allow_replace
+        ! settings.allow_replace
       end
 
       def allow_delete?
-        allow_delete
+        settings.allow_delete
       end
 
       def allow_upload?
-        allow_upload
+        settings.allow_upload
       end
 
       def fixup_bundler_rubygems!
@@ -54,7 +54,7 @@ module Geminabox
 
       def reindex(force_rebuild = false)
         fixup_bundler_rubygems!
-        force_rebuild = true unless incremental_updates
+        force_rebuild = true unless settings.incremental_updates
         if force_rebuild
           indexer.generate_index
           dependency_cache.flush
@@ -78,7 +78,7 @@ module Geminabox
       end
 
       def indexer
-        Gem::Indexer.new(data, :build_legacy => build_legacy)
+        Gem::Indexer.new(data, :build_legacy => settings.build_legacy)
       end
 
       def dependency_cache
